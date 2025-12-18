@@ -86,9 +86,19 @@ struct EventModel: Codable {
         }
         
         self.allDay = event.isAllDay
-        self.description = event.notes ?? ""
+
+        var desc = event.notes ?? ""
+        let maxLength = 25
+        if desc.count > maxLength {
+            let filler = "..."
+            desc = String(
+                desc.dropLast(desc.count - maxLength + filler.count) + filler
+            )
+        }
+        self.description = desc
+
         self.status = event.status == .confirmed ? "confirmed" : "tentative"
-        
+
         // Calendar Identifier Strategy:
         // Using calendarItemExternalIdentifier as the primary identifier.
         // This provides the best cross-device consistency for server-backed calendars.
